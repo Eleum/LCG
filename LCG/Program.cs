@@ -66,6 +66,7 @@ namespace LCG
                         _prev = (a * _prev + c) % m;
                         break;
                     case Mode.Two:
+                        //_prev = (a * Math.Pow(_prev, 2) +  + c) % m;
                         break;
                     case Mode.Three:
                         break;
