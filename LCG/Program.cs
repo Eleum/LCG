@@ -28,17 +28,34 @@ namespace LCG
 
         private static async Task MainAsync()
         {
+            //LinearCongruentialGenerator.PrimeFactors(2147483647);
             var lcg = new LinearCongruentialGenerator();
 
+            var modes = new[] { Mode.One, Mode.Two, Mode.Three };
 
+            foreach(var mode in modes)
+            {
+                Console.WriteLine($"Mode: {mode.ToString()}\n");
+                await Task.Run(() =>
+                {
+                    for (int i = 0; i < 25; i++)
+                    {
+                        Console.Write(lcg.Next(30, mode) + " ");
+                    }
+                });
+                Console.WriteLine("\n_____________________________________________________________________\n");
+            }
+
+            Console.ReadKey();
         }
 
         private class LinearCongruentialGenerator
         {
             //Borland C/C++ values from en wiki
-            private const long m = 4294967296; // 2^32
-            private const long a = 22695477;
-            private const long c = 1;
+            private const long m = 2147483647; // 2^31-1
+            private const long a = 48271;
+            private const long c = 0;
+            private const long b = 16807;
 
             private long _prev;
 
@@ -66,9 +83,10 @@ namespace LCG
                         _prev = (a * _prev + c) % m;
                         break;
                     case Mode.Two:
-                        //_prev = (a * Math.Pow(_prev, 2) +  + c) % m;
+                        _prev = (b * Convert.ToInt64(Math.Pow(_prev, 2)) + a * _prev + c) % m;
                         break;
                     case Mode.Three:
+                        //_prev = (b * Convert.ToInt64(Math.Pow(_prev, 2)) + a * _prev + c) % m;
                         break;
                 }
 
@@ -79,8 +97,9 @@ namespace LCG
             /// Gets next random number with maximum value of (max-1)
             /// </summary>
             /// <param name="max">maximum value</param>
+            /// <param name="mode">generator mode used to calculate a value</param>
             /// <returns></returns>
-            public long Next(long max)
+            public long Next(long max, Mode mode = Mode.One)
             {
                 return Next() % max;
             }
