@@ -63,7 +63,7 @@ namespace LCG
 
         private class LinearCongruentialGenerator
         {
-            //Borland C/C++ values from en wiki
+            //C++11's minstd_rand() values from en wiki
             private const long m = 2147483647; // 2^31-1
             private const long a = 48271;
             private const long c = 0;
