@@ -28,13 +28,25 @@ namespace LCG
 
         private static async Task MainAsync()
         {
-            //LinearCongruentialGenerator.PrimeFactors(2147483647);
-            var lcg = new LinearCongruentialGenerator();
+            LinearCongruentialGenerator lcg = null;
 
             var modes = new[] { Mode.One, Mode.Two, Mode.Three };
 
             foreach(var mode in modes)
             {
+                switch (mode)
+                {
+                    case Mode.One:
+                        lcg = new LinearCongruentialGenerator();
+                        break;
+                    case Mode.Two:
+                        lcg = new LinearCongruentialGenerator(16807);
+                        break;
+                    case Mode.Three:
+                        lcg = new LinearCongruentialGenerator(16807, 65793);
+                        break;
+                }
+
                 Console.WriteLine($"Mode: {mode.ToString()}\n");
                 await Task.Run(() =>
                 {
@@ -55,7 +67,8 @@ namespace LCG
             private const long m = 2147483647; // 2^31-1
             private const long a = 48271;
             private const long c = 0;
-            private const long b = 16807;
+            private long b;
+            private long d;
 
             private long _prev;
 
@@ -68,6 +81,13 @@ namespace LCG
             public LinearCongruentialGenerator(long seed)
             {
                 _prev = seed;
+            }
+
+            public LinearCongruentialGenerator(long b = 0, long d = 0)
+            {
+                this.b = b;
+                this.d = d;
+                _prev = DateTime.Now.Ticks % m;
             }
 
             /// <summary>
@@ -86,7 +106,7 @@ namespace LCG
                         _prev = (b * Convert.ToInt64(Math.Pow(_prev, 2)) + a * _prev + c) % m;
                         break;
                     case Mode.Three:
-                        //_prev = (b * Convert.ToInt64(Math.Pow(_prev, 2)) + a * _prev + c) % m;
+                        _prev = (d * Convert.ToInt64(Math.Pow(_prev, 3)) + b * Convert.ToInt64(Math.Pow(_prev, 2)) + a * _prev + c) % m;
                         break;
                 }
 
